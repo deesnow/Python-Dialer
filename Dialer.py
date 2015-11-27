@@ -1,5 +1,12 @@
+import subprocess
+import uuid
+
+
+
+
+
 def asteriskCheck():
-    import subprocess
+    #import subprocess
     cmd = "/etc/init.d/asterisk status"
     service = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     if "Active: active" in service.communicate()[0]:
@@ -7,27 +14,36 @@ def asteriskCheck():
     else:
         return False
         
-    
-    
+def asteriskStart():
+    #import subprocess
+    cmd = "sudo service asterisk start"
+    service = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)    
+
+def asteriskStop():
+    #import subprocess
+    cmd = "sudo service asterisk stop"
+    service = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)    
     
 
 
 
-def dialFileGen(numToCall, duration, waitBeforeDtmf, dtmfs):
-    print 'Channel: Local/s@greeting'   
-    print 'Context: from-sip'
-    print 'Extension: 777'
-    print 'Priority: 1'
-    print 'Callerid: "Dialer-out"<111{}>'.format(str(numToCall))
-    print 'Archive: Yes'
-    print 'MaxRetries: 0'
-    print 'RetryTime: 10'
+def dialFileGen(numToCall, duration, waitBeforeDtmf, dtmfs, filename):
+    fo = open(filename, "w")
+    fo.write('Channel: Local/s@greeting'+'\n'
+    'Context: from-sip'+'\n'
+    'Extension: 777'+'\n'
+    'Priority: 1'+'\n'
+    'Callerid: "Dialer-out"<111{}>'.format(str(numToCall))+'\n'
+    'Archive: Yes'+'\n'
+    'MaxRetries: 0'+'\n'
+    'RetryTime: 10'+'\n')
     if dtmfs <> "":
-        print 'WaitTime: {}'.format(waitBeforeDtmf)
-        print 'Set: PassedInfo={}-{}-{}'.format(str(duration),str(numToCall), str(dtmfs))
+        fo.write('WaitTime: {}'.format(waitBeforeDtmf)+'\n'
+        'Set: PassedInfo={}-{}-{}'.format(str(duration),str(numToCall), str(dtmfs))+'\n')
     else:
-        print 'WaitTime: '+str(5)
-        print 'Set: PassedInfo={}-{}-empty'.format(str(duration),str(dtmfs))
+        fo.write('WaitTime: '+str(5)+'\n'
+        'Set: PassedInfo={}-{}-empty'.format(str(duration),str(dtmfs))+'\n')
+    fo.close()
         
 
 
